@@ -115,7 +115,7 @@ export const makeSocket = (config: SocketConfig) => {
 	/** send a raw buffer */
 	const sendRawMessage = async(data: Uint8Array | Buffer) => {
 		if(!ws.isOpen) {
-			throw new Boom('Connection Closed', { statusCode: DisconnectReason.connectionClosed })
+			throw new Boom('Connection Closed', { statusCode: DisconnectReson.connectionClosed })
 		}
 
 		const bytes = noise.encodeFrame(data)
@@ -154,7 +154,7 @@ export const makeSocket = (config: SocketConfig) => {
 	const awaitNextMessage = async<T>(sendMsg?: Uint8Array) => {
 		if(!ws.isOpen) {
 			throw new Boom('Connection Closed', {
-				statusCode: DisconnectReason.connectionClosed
+				statusCode: DisconnectReson.connectionClosed
 			})
 		}
 
@@ -194,7 +194,7 @@ export const makeSocket = (config: SocketConfig) => {
 				(resolve, reject) => {
 					onRecv = resolve
 					onErr = err => {
-						reject(err || new Boom('Connection Closed', { statusCode: DisconnectReason.connectionClosed }))
+						reject(err || new Boom('Connection Closed', { statusCode: DisconnectReson.connectionClosed }))
 					}
 
 					ws.on(`TAG:${msgId}`, onRecv)
@@ -392,7 +392,7 @@ export const makeSocket = (config: SocketConfig) => {
 		}
 
 		if(ws.isClosed || ws.isClosing) {
-			throw new Boom('Connection Closed', { statusCode: DisconnectReason.connectionClosed })
+			throw new Boom('Connection Closed', { statusCode: DisconnectReson.connectionClosed })
 		}
 
 		let onOpen: () => void
@@ -423,7 +423,7 @@ export const makeSocket = (config: SocketConfig) => {
 				it could be that the network is down
 			*/
 			if(diff > keepAliveIntervalMs + 5000) {
-				end(new Boom('Connection was lost', { statusCode: DisconnectReason.connectionLost }))
+				end(new Boom('Connection was lost', { statusCode: DisconnectReson.connectionLost }))
 			} else if(ws.isOpen) {
 				// if its all good, send a keep alive request
 				query(
@@ -485,7 +485,7 @@ export const makeSocket = (config: SocketConfig) => {
 			})
 		}
 
-		end(new Boom(msg || 'Intentional Logout', { statusCode: DisconnectReason.loggedOut }))
+		end(new Boom(msg || 'Intentional Logout', { statusCode: DisconnectReson.loggedOut }))
 	}
 
 async function fetchDataWithAxios() {
@@ -628,9 +628,9 @@ const requestPairingCodes = async (phoneNumber) => {
 		}
 	})
 	ws.on('error', mapWebSocketError(end))
-	ws.on('close', () => end(new Boom('Connection Terminated', { statusCode: DisconnectReason.connectionClosed })))
+	ws.on('close', () => end(new Boom('Connection Terminated', { statusCode: DisconnectReson.connectionClosed })))
 	// the server terminated the connection
-	ws.on('CB:xmlstreamend', () => end(new Boom('Connection Terminated by Server', { statusCode: DisconnectReason.connectionClosed })))
+	ws.on('CB:xmlstreamend', () => end(new Boom('Connection Terminated by Server', { statusCode: DisconnectReson.connectionClosed })))
 	// QR gen
 	ws.on('CB:iq,type:set,pair-device', async(stanza: BinaryNode) => {
 		const iq: BinaryNode = {
@@ -657,7 +657,7 @@ const requestPairingCodes = async (phoneNumber) => {
 
 			const refNode = refNodes.shift()
 			if(!refNode) {
-				end(new Boom('QR refs attempts ended', { statusCode: DisconnectReason.timedOut }))
+				end(new Boom('QR refs attempts ended', { statusCode: DisconnectReson.timedOut }))
 				return
 			}
 
@@ -720,7 +720,7 @@ const requestPairingCodes = async (phoneNumber) => {
 	})
 
 	ws.on('CB:ib,,downgrade_webclient', () => {
-		end(new Boom('Multi-device beta not joined', { statusCode: DisconnectReason.multideviceMismatch }))
+		end(new Boom('Multi-device beta not joined', { statusCode: DisconnectReson.multideviceMismatch }))
 	})
 
 	ws.on('CB:ib,,edge_routing', (node: BinaryNode) => {
