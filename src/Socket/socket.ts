@@ -14,7 +14,7 @@ import {
 	MOBILE_PORT,
 	NOISE_WA_HEADER
 } from '../Defaults'
-import { DisconnectReason, SocketConfig } from '../Types'
+import { DisconnectReson, SocketConfig } from '../Types'
 import {
 	addTransactionCapability,
 	aesEncryptCTR,
