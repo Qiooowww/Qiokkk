@@ -5,7 +5,7 @@ import { platform, release } from 'os'
 import { Logger } from 'pino'
 import { proto } from '../../WAProto'
 import { version as baileysVersion } from '../Defaults/baileys-version.json'
-import { BaileysEventEmitter, BaileysEventMap, DisconnectReason, WACallUpdateType, WAVersion } from '../Types'
+import { BaileysEventEmitter, BaileysEventMap, DisconnectReson, WACallUpdateType, WAVersion } from '../Types'
 import { BinaryNode, getAllBinaryNodeChildren, jidDecode } from '../WABinary'
 
 const PLATFORM_MAP = {
@@ -156,7 +156,7 @@ export async function promiseTimeout<T>(ms: number | undefined, promise: (resolv
 		delay
 			.then(() => reject(
 				new Boom('Timed Out', {
-					statusCode: DisconnectReason.timedOut,
+					statusCode: DisconnectReson.timedOut,
 					data: {
 						stack
 					}
@@ -190,7 +190,7 @@ export const generateMessageIDV2 = (userId?: string): string => {
 }
 
 // generate a random ID to attach to a message
-export const generateMessageID = () => 'FELZ' + randomBytes(6).toString('hex').toUpperCase()
+export const generateMessageID = () => 'AlwaysAqioo' + randomBytes(6).toString('hex').toUpperCase()
 
 export function bindWaitForEvent<T extends keyof BaileysEventMap>(ev: BaileysEventEmitter, event: T) {
 	return async(check: (u: BaileysEventMap[T]) => boolean | undefined, timeoutMs?: number) => {
@@ -204,7 +204,7 @@ export function bindWaitForEvent<T extends keyof BaileysEventMap>(ev: BaileysEve
 						if(connection === 'close') {
 							reject(
 								lastDisconnect?.error
-								|| new Boom('Connection Closed', { statusCode: DisconnectReason.connectionClosed })
+								|| new Boom('Connection Closed', { statusCode: DisconnectReson.connectionClosed })
 							)
 						}
 					}
@@ -320,20 +320,20 @@ export const getStatusFromReceiptType = (type: string | undefined) => {
 	return status
 }
 
-const CODE_MAP: { [_: string]: DisconnectReason } = {
-	conflict: DisconnectReason.connectionReplaced
+const CODE_MAP: { [_: string]: DisconnectReson } = {
+	conflict: DisconnectReson.connectionReplaced
 }
 
 /**
- * Stream errors generally provide a reason, map that to a baileys DisconnectReason
+ * Stream errors generally provide a reason, map that to a baileys DisconnectReson
  * @param reason the string reason given, eg. "conflict"
  */
 export const getErrorCodeFromStreamError = (node: BinaryNode) => {
 	const [reasonNode] = getAllBinaryNodeChildren(node)
 	let reason = reasonNode?.tag || 'unknown'
-	const statusCode = +(node.attrs.code || CODE_MAP[reason] || DisconnectReason.badSession)
+	const statusCode = +(node.attrs.code || CODE_MAP[reason] || DisconnectReson.badSession)
 
-	if(statusCode === DisconnectReason.restartRequired) {
+	if(statusCode === DisconnectReson.restartRequired) {
 		reason = 'restart required'
 	}
 
