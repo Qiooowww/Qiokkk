@@ -305,7 +305,7 @@ export const makeMessagesSocket = (config: SocketConfig) => {
 		return { nodes, shouldIncludeDeviceIdentity }
 	} //apela
 
-	const relayMessages = async(
+	const relayMessage = async(
 		jid: string,
 		message: proto.IMessage,
 		{ messageId: msgId, participant, additionalAttributes, additionalNodes, useUserDevicesCache, cachedGroupMetadata, statusJidList }: MessageRelayOptions
@@ -713,7 +713,7 @@ export const makeMessagesSocket = (config: SocketConfig) => {
 		...sock,
 		getPrivacyTokens,
 		assertSessions,
-		relayMessages,
+		relayMessage,
 		sendReceipt,
 		sendReceipts,
 		getButtonArgs,
@@ -855,7 +855,7 @@ export const makeMessagesSocket = (config: SocketConfig) => {
 					console.warn('cachedGroupMetadata in sendMessage are deprecated, now cachedGroupMetadata is part of the socket config.')
 				}
 
-				await relayMessages(jid, fullMsg.message!, { messageId: fullMsg.key.id!, cachedGroupMetadata: options.cachedGroupMetadata, additionalNodes: isAiMsg ? additionalNodes : options.additionalNodes, additionalAttributes, statusJidList: options.statusJidList })
+				await relayMessage(jid, fullMsg.message!, { messageId: fullMsg.key.id!, cachedGroupMetadata: options.cachedGroupMetadata, additionalNodes: isAiMsg ? additionalNodes : options.additionalNodes, additionalAttributes, statusJidList: options.statusJidList })
 				if(config.emitOwnEvents) {
 					process.nextTick(() => {
 						processingMutex.mutex(() => (
