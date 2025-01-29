@@ -16,7 +16,7 @@ import { SocketConfig } from './Socket'
 
 export type UserFacingSocketConfig = Partial<SocketConfig> & { auth: AuthenticationState }
  
-export enum DisconnectReson {
+export enum DisconnectReason {
     connectionClosed = 428,
     connectionLost = 408,
     connectionReplaced = 440,
