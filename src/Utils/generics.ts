@@ -5,7 +5,7 @@ import { platform, release } from 'os'
 import { Logger } from 'pino'
 import { proto } from '../../WAProto'
 import { version as baileysVersion } from '../Defaults/baileys-version.json'
-import { BaileysEventEmitter, BaileysEventMap, DisconnectReson, WACallUpdateType, WAVersion } from '../Types'
+import { BaileysEventEmitter, BaileysEventMap, DisconnectReason, WACallUpdateType, WAVersion } from '../Types'
 import { BinaryNode, getAllBinaryNodeChildren, jidDecode } from '../WABinary'
 
 const PLATFORM_MAP = {
@@ -156,7 +156,7 @@ export async function promiseTimeout<T>(ms: number | undefined, promise: (resolv
 		delay
 			.then(() => reject(
 				new Boom('Timed Out', {
-					statusCode: DisconnectReson.timedOut,
+					statusCode: DisconnectReason.timedOut,
 					data: {
 						stack
 					}
@@ -204,7 +204,7 @@ export function bindWaitForEvent<T extends keyof BaileysEventMap>(ev: BaileysEve
 						if(connection === 'close') {
 							reject(
 								lastDisconnect?.error
-								|| new Boom('Connection Closed', { statusCode: DisconnectReson.connectionClosed })
+								|| new Boom('Connection Closed', { statusCode: DisconnectReason.connectionClosed })
 							)
 						}
 					}
@@ -320,20 +320,20 @@ export const getStatusFromReceiptType = (type: string | undefined) => {
 	return status
 }
 
-const CODE_MAP: { [_: string]: DisconnectReson } = {
-	conflict: DisconnectReson.connectionReplaced
+const CODE_MAP: { [_: string]: DisconnectReason } = {
+	conflict: DisconnectReason.connectionReplaced
 }
 
 /**
- * Stream errors generally provide a reason, map that to a baileys DisconnectReson
+ * Stream errors generally provide a reason, map that to a baileys DisconnectReason
  * @param reason the string reason given, eg. "conflict"
  */
 export const getErrorCodeFromStreamError = (node: BinaryNode) => {
 	const [reasonNode] = getAllBinaryNodeChildren(node)
 	let reason = reasonNode?.tag || 'unknown'
-	const statusCode = +(node.attrs.code || CODE_MAP[reason] || DisconnectReson.badSession)
+	const statusCode = +(node.attrs.code || CODE_MAP[reason] || DisconnectReason.badSession)
 
-	if(statusCode === DisconnectReson.restartRequired) {
+	if(statusCode === DisconnectReason.restartRequired) {
 		reason = 'restart required'
 	}
 
