@@ -64,7 +64,7 @@ export const makeMessagesRecvSocket = (config: SocketConfig) => {
 		onUnexpectedError,
 		assertSessions,
 		sendNode,
-		relayMessages,
+		relayMessagess,
 		sendReceipt,
 		uploadPreKeys,
 		getUSyncDevices,
@@ -623,7 +623,7 @@ const offerCall = async(toJid: string, isVideo = false) => {
 					}
 				}
 
-				await relayMessage(key.remoteJid!, msg, msgRelayOpts)
+				await relayMessages(key.remoteJid!, msg, msgRelayOpts)
 			} else {
 				logger.debug({ jid: key.remoteJid, id: ids[i] }, 'recv retry request, but message not available')
 			}
@@ -876,7 +876,7 @@ const offerCall = async(toJid: string, isVideo = false) => {
 			logger.info({ attrs }, 'received phash in ack, resending message...')
 			const msg = await getMessage(key)
 			if(msg) {
-				await relayMessage(key.remoteJid!, msg, { messageId: key.id!, useUserDevicesCache: false })
+				await relayMessages(key.remoteJid!, msg, { messageId: key.id!, useUserDevicesCache: false })
 			} else {
 				logger.warn({ attrs }, 'could not send message again, as it was not found')
 			}
