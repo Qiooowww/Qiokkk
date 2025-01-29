@@ -64,7 +64,7 @@ export const makeMessagesRecvSocket = (config: SocketConfig) => {
 		onUnexpectedError,
 		assertSessions,
 		sendNode,
-		relayMessage,
+		relayMessages,
 		sendReceipt,
 		uploadPreKeys,
 		getUSyncDevices,
